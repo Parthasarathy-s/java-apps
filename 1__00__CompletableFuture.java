@@ -10,6 +10,27 @@ import java.util.concurrent.atomic.AtomicInteger;
     a call center with N agents, each independently handling one ticket
     ☕️ IO-bound/ DB connection/ Rate limit
 
+    ThreadPoolExecutor pool = new ThreadPoolExecutor(
+    5,                          // corePoolSize    — min threads always alive
+    20,                         // maximumPoolSize — max threads under load
+    60L, TimeUnit.SECONDS,      // keepAliveTime   — idle thread TTL
+    new ArrayBlockingQueue<>(500), // workQueue    — bounded queue!
+    new ThreadFactory() { ... },   // custom thread naming
+    new ThreadPoolExecutor.CallerRunsPolicy() // rejection policy
+);
+
+New task arrives
+        │
+        ├── Core threads free?          YES → assign to core thread
+        │
+        ├── Core threads all busy?      YES → put in queue
+        │
+        ├── Queue full?                 YES → create extra thread (up to max 20)
+        │
+        └── At max threads + queue full?     → REJECTION POLICY kicks in
+
+
+
                     ┌─────────────────────────────────┐
 New Tasks ──────►   │         ThreadPoolExecutor       │
                     │                                  │
@@ -35,6 +56,13 @@ New Tasks ──────►   │         ThreadPoolExecutor       │
                                     ▼
                           CallerRunsPolicy
                     (calling thread runs the task itself)
+
+FixedThreadPool — Fixed n threads, Unbounded queue — Best for predictable IO workloads.
+CachedThreadPool — 0 to unlimited threads, No queue — Best for bursty short-lived tasks.
+SingleThreadExecutor — 1 thread, Unbounded queue — Best for sequential ordered processing.
+ScheduledThreadPool — Fixed n threads, Delayed queue — Best for periodic and scheduled jobs.
+WorkStealingPool — CPU cores threads, Per-thread queue — Best for independent parallel tasks. (ForkJoinPool - default)
+ThreadPoolExecutor — You decide, You decide — Best for production systems needing full control.
  */
 
 public class ApprovalWorkflowAsync {
