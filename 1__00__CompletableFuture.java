@@ -72,6 +72,20 @@ SingleThreadExecutor — 1 thread, Unbounded queue — Best for sequential order
 ScheduledThreadPool — Fixed n threads, Delayed queue — Best for periodic and scheduled jobs.
 WorkStealingPool — CPU cores threads, Per-thread queue — Best for independent parallel tasks. (ForkJoinPool - default)
 ThreadPoolExecutor — You decide, You decide — Best for production systems needing full control.
+
+java.util.concurrent
+        │
+        ├── Executor                          (interface) → just execute(Runnable)
+        │       │
+        │       └── ExecutorService           (interface) → submit(), shutdown(), invokeAll()
+        │               │
+        │               ├── ThreadPoolExecutor        (concrete) ← newFixedThreadPool uses this internally
+        │               │
+        │               ├── ScheduledThreadPoolExecutor (concrete) ← for cron-style scheduling
+        │               │
+        │               └── ForkJoinPool              (concrete) ← work stealing, recursive tasks
+        │
+        └── Executors                         (factory/helper class) → newFixedThreadPool(), newCachedThreadPool()
  */
 
 public class ApprovalWorkflowAsync {
