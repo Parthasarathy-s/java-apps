@@ -1,6 +1,16 @@
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/***
+    👉 ForkJoinPool
+    a chef breaking a big recipe into sub-recipes, cooking in parallel
+    ☕️ Calculating portfolio risk across 1 million trades
+
+    👉 ExecutorService
+    a call center with N agents, each independently handling one ticket
+    ☕️ IO-bound/ DB connection/ Rate limit
+ */
+
 public class ApprovalWorkflowAsync {
 
     // ─── 1. Declare your own ExecutorService ───────────────────────────
