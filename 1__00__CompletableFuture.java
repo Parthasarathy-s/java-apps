@@ -57,6 +57,15 @@ New Tasks ──────►   │         ThreadPoolExecutor       │
                           CallerRunsPolicy
                     (calling thread runs the task itself)
 
+Executors (factory)
+    │
+    ├── newFixedThreadPool(n)          → ThreadPoolExecutor (fixed)
+    ├── newCachedThreadPool()          → ThreadPoolExecutor (elastic)
+    ├── newSingleThreadExecutor()      → ThreadPoolExecutor (single)
+    ├── newScheduledThreadPool(n)      → ScheduledThreadPoolExecutor
+    ├── newSingleThreadScheduledExecutor() → ScheduledThreadPoolExecutor (single)
+    └── newWorkStealingPool(n)         → ForkJoinPool
+    
 FixedThreadPool — Fixed n threads, Unbounded queue — Best for predictable IO workloads.
 CachedThreadPool — 0 to unlimited threads, No queue — Best for bursty short-lived tasks.
 SingleThreadExecutor — 1 thread, Unbounded queue — Best for sequential ordered processing.
