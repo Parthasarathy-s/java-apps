@@ -9,6 +9,32 @@ import java.util.concurrent.atomic.AtomicInteger;
     👉 ExecutorService
     a call center with N agents, each independently handling one ticket
     ☕️ IO-bound/ DB connection/ Rate limit
+
+                    ┌─────────────────────────────────┐
+New Tasks ──────►   │         ThreadPoolExecutor       │
+                    │                                  │
+                    │  Core Threads (always alive)     │
+                    │  ┌──────┐ ┌──────┐ ┌──────┐     │
+                    │  │  T1  │ │  T2  │ │  T3  │     │
+                    │  │ BUSY │ │ BUSY │ │ BUSY │ ... │
+                    │  └──────┘ └──────┘ └──────┘     │
+                    │                                  │
+                    │  Queue (500 seats)               │
+                    │  [ t6 | t7 | t8 | t9 | ... ]    │
+                    │                                  │
+                    │  Extra Threads (born when        │
+                    │  queue full, die when idle)      │
+                    │  ┌──────┐ ┌──────┐              │
+                    │  │  T6  │ │  T7  │ ...up to 20  │
+                    │  └──────┘ └──────┘              │
+                    └─────────────────────────────────┘
+                                    │
+                              Queue full
+                          + all 20 threads busy
+                                    │
+                                    ▼
+                          CallerRunsPolicy
+                    (calling thread runs the task itself)
  */
 
 public class ApprovalWorkflowAsync {
